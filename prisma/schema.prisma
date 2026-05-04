@@ -1,0 +1,63 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────
+// Surah (Chapter)
+// ─────────────────────────────────────────────────────────────
+model Surah {
+  id                Int     @id
+  nameArabic        String
+  nameSimple        String
+  nameComplex       String
+  nameTranslation   String
+  revelationPlace   String
+  versesCount       Int
+  pageStart         Int
+  pageEnd           Int
+  bismillahPre      Boolean @default(true)
+
+  ayahs             Ayah[]
+
+  @@map("surahs")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Ayah (Verse)
+// ─────────────────────────────────────────────────────────────
+model Ayah {
+  id            Int    @id
+  surahId       Int
+  verseNumber   Int
+  verseKey      String @unique
+  textUthmani   String
+  translation   String @db.Text
+  juzNumber     Int
+  pageNumber    Int
+
+  surah         Surah  @relation(fields: [surahId], references: [id])
+
+  @@index([surahId])
+  @@index([verseKey])
+  @@map("ayahs")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Juz
+// ─────────────────────────────────────────────────────────────
+model Juz {
+  id              Int    @id
+  juzNumber       Int    @unique
+  firstVerseKey   String
+  lastVerseKey    String
+  versesCount     Int
+
+  @@map("juzs")
+}
