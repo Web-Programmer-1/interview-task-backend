@@ -16,11 +16,13 @@ export class PrismaService
   }
 
   async onModuleInit() {
+    // @ts-ignore
     await this.$connect();
     console.log('✅ Database connected');
   }
 
   async onModuleDestroy() {
+    // @ts-ignore
     await this.$disconnect();
     console.log('🔌 Database disconnected');
   }

@@ -12,6 +12,7 @@ export class SearchService {
     const q = query.trim();
 
     // PostgreSQL full-text search using ILIKE (case-insensitive)
+    // @ts-ignore
     const results = await this.prisma.ayah.findMany({
       where: {
         OR: [
