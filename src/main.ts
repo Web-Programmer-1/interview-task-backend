@@ -11,7 +11,11 @@ async function bootstrap() {
 
   // CORS — allow frontend
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [
+      process.env.FRONTEND_URL,
+      'http://localhost:3000',
+      'https://interview-task-frontend-three.vercel.app',
+    ].filter(Boolean),
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
   });
