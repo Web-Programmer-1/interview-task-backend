@@ -40,13 +40,13 @@ export class SearchService {
     });
 
     return results.map((r) => ({
-      verse_key: r.verseKey,
-      surah_id: r.surahId,
-      surah_name: r.surah.nameSimple,
-      surah_arabic: r.surah.nameArabic,
-      verse_number: r.verseNumber,
-      arabic_text: r.textUthmani,
+      id: r.id,
+      verseKey: r.verseKey,
+      verseNumber: r.verseNumber,
+      textUthmani: r.textUthmani,
       translation: r.translation,
+      surahId: r.surahId,
+      surah: r.surah,
     }));
   }
 }
