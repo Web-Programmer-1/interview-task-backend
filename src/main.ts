@@ -11,11 +11,19 @@ async function bootstrap() {
 
   // CORS — allow frontend
   app.enableCors({
-    origin: [
-      process.env.FRONTEND_URL,
-      'http://localhost:3000',
-      'https://interview-task-frontend-three.vercel.app',
-    ].filter(Boolean),
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        process.env.FRONTEND_URL,
+      ].filter(Boolean);
+
+      if (!origin || allowedOrigins.some(o => o === origin) || origin.endsWith('.vercel.app')) {
+        callback(null, true);
+      } else {
+        callback(null, false); // Or throw error, but false is safer for some clients
+      }
+    },
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
   });
