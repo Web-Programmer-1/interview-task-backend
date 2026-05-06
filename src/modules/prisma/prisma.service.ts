@@ -13,10 +13,6 @@ export class PrismaService
   constructor() {
     const connectionString = process.env.DATABASE_URL;
     
-    if (!connectionString) {
-      this.logger.error('❌ DATABASE_URL is not defined in environment variables!');
-    }
-
     // Optimize pool for serverless: small max connections, faster timeouts
     const pool = new Pool({ 
       connectionString,
@@ -26,6 +22,10 @@ export class PrismaService
     });
     const adapter = new PrismaPg(pool);
     super({ adapter });
+
+    if (!connectionString) {
+      this.logger.error('❌ DATABASE_URL is not defined in environment variables!');
+    }
   }
 
   async onModuleInit() {
