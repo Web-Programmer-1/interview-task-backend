@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -8,22 +8,29 @@ export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
+  private logger = new Logger('PrismaService');
+
   constructor() {
     const connectionString = process.env.DATABASE_URL;
-    const pool = new Pool({ connectionString });
+    // Optimize pool for serverless: small max connections, faster timeouts
+    const pool = new Pool({ 
+      connectionString,
+      max: 2, // Low max connections for serverless to avoid hitting Neon limits
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 5000,
+    });
     const adapter = new PrismaPg(pool);
     super({ adapter });
   }
 
   async onModuleInit() {
-    // @ts-ignore
-    await this.$connect();
-    console.log('✅ Database connected');
+    // In serverless, we don't want to block startup with a database connection check.
+    // Prisma will connect automatically on the first query.
+    this.logger.log('Prisma initialized (lazy connection)');
   }
 
   async onModuleDestroy() {
-    // @ts-ignore
     await this.$disconnect();
-    console.log('🔌 Database disconnected');
+    this.logger.log('🔌 Database disconnected');
   }
 }

@@ -5,14 +5,11 @@ import { PrismaService } from '../prisma/prisma.service';
 export class SearchService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // GET /api/search?q=mercy&limit=20
   async search(query: string, limit = 20) {
     if (!query?.trim()) return [];
 
     const q = query.trim();
 
-    // PostgreSQL full-text search using ILIKE (case-insensitive)
-    // @ts-ignore
     const results = await this.prisma.ayah.findMany({
       where: {
         OR: [

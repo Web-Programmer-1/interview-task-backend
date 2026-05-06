@@ -1,9 +1,4 @@
-/**
- * Quran Database Seeder
- * Downloads data from alquran.cloud API and seeds PostgreSQL via Prisma
- *
- * Run: npx ts-node prisma/seed.ts
- */
+
 
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
@@ -51,13 +46,11 @@ async function sleep(ms: number) {
 async function main() {
   console.log('🕌 Starting Quran DB Seed...\n');
 
-  // ── Step 1: Fetch all 114 surah metadata ──────────────────
   console.log('📚 Fetching surah metadata from Quran.com...');
   const chaptersData = await fetchJSON(`${QURAN_COM}/chapters?language=en`);
   const chapters: ChapterMeta[] = chaptersData.chapters;
   console.log(`✅ Got ${chapters.length} surahs\n`);
 
-  // ── Step 2: Upsert surahs ─────────────────────────────────
   console.log('💾 Seeding Surahs...');
   for (const ch of chapters) {
     try {
@@ -88,7 +81,6 @@ async function main() {
   }
   console.log('✅ Surahs seeded!\n');
 
-  // ── Step 3: Fetch and seed Ayahs surah by surah ───────────
   console.log('📖 Seeding Ayahs (Arabic + English)...');
   let totalAyahs = 0;
 

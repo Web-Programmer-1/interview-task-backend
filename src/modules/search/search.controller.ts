@@ -5,7 +5,6 @@ import { SearchService } from './search.service';
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
-  // GET /api/search?q=mercy&limit=20
   @Get()
   search(
     @Query('q') query: string,
