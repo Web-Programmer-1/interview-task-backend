@@ -35,9 +35,24 @@ let cachedApp: any;
 
 // Vercel serverless function handler
 export default async (req: any, res: any) => {
-  if (!cachedApp) {
-    console.log('🚀 Backend cold start: Initializing NestJS...');
-    cachedApp = await createServer(server);
+  try {
+    if (!cachedApp) {
+      console.log('🚀 Backend cold start: Initializing NestJS...');
+      cachedApp = await createServer(server);
+      console.log('✅ NestJS initialized successfully');
+    }
+    
+    // Check if the request is for the root or API
+    console.log(`📡 Incoming request: ${req.method} ${req.url}`);
+    
+    return server(req, res);
+  } catch (error) {
+    console.error('❌ Serverless Function Error:', error);
+    res.status(500).json({
+      statusCode: 500,
+      message: 'Internal Server Error',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+    });
   }
-  server(req, res);
 };
