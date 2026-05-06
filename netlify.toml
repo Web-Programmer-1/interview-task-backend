@@ -1,0 +1,12 @@
+[build]
+  command = "pnpm run build"
+  functions = "dist/lambda"
+  publish = "dist"
+
+[functions]
+  node_bundle = true
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/lambda"
+  status = 200
